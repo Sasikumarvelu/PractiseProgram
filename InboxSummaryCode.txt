@@ -1,0 +1,31 @@
+ @Test
+    public void getMailDetails(){
+try {
+    Browser.navigateTo(Browser.getValue("MailUrl"));
+
+    actions.TextBox(GetLocator.elementInput("id","UsernameId"),Browser.getValue("UserText"));
+    actions.clickButton(GetLocator.elementInput("id","NextId"));
+    actions.TextBox(GetLocator.elementInput("id","PasswordId"),Browser.getValue("PassWordText"));
+    actions.clickButton(GetLocator.elementInput("id","NextId"));
+    actions.clickButton(GetLocator.elementInput("id","MailId"));
+
+    List<WebElement> sender = GetLocator.listOfElements("SenderXpath");
+    List<WebElement> subject = GetLocator.listOfElements("SubjectXpath");
+    List<WebElement> time = GetLocator.listOfElements("TimeXpath");
+
+    String[] header= {"Sender","Subject","Time"};
+            FileWriter writer = new FileWriter(filePath);
+            CSVWriter csvWriter = new CSVWriter(writer);
+            csvWriter.writeNext(header);
+            for (int count = startIndex; count <sender.size(); count++){
+                String[] details={sender.get(count).getText(),subject.get(count).getText(),time.get(count).getText()};
+                csvWriter.writeNext(details);
+            }
+            csvWriter.close();
+            System.out.println("File is created successfully");
+        } catch (IOException e) {
+            System.out.println("File is not found");
+        } catch (NoSuchElementException noSuchElementException){
+             actions.screenShot(Browser.driver,imagePath);
+        }
+    }
